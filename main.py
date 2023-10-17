@@ -2,8 +2,6 @@ import krpc
 from time import sleep
 from os import system
 
-from sys import path
-path.append('D:\Codes\Python\www\Vector')
 from Vector import Vector3
 
 class Launch:
@@ -16,7 +14,6 @@ class Launch:
         self.body_ref = self.body.reference_frame
         self.surface_ref = self.vessel.surface_reference_frame
         self.flight = self.vessel.flight(self.body_ref)
-        self.drawing = self.conn.drawing
 
         # Streams
         self.stream_mass = self.conn.add_stream(getattr, self.vessel, "mass")
@@ -38,14 +35,18 @@ class Launch:
         self.grav_turn_inclination = 90
         self.grav_turn_start = 500
         self.grav_turn_end = 60000
-        self.grav_turn_max_apoapsis = 80000
+        self.grav_turn_max_apoapsis = 90000
+
+        self.heading = 90
 
         # Initializing
         self.vessel.control.brakes = False
         self.vessel.control.rcs = False
         self.vessel.auto_pilot.engage()
-        self.vessel.auto_pilot.target_roll = 0
         self.vessel.auto_pilot.reference_frame = self.surface_ref
+        self.vessel.auto_pilot.stopping_time = (0.5, 0.5, 0.5)
+        self.vessel.auto_pilot.deceleration_time = (5, 5, 5)
+        self.vessel.auto_pilot.target_roll = 0
         self.vessel.auto_pilot.target_direction = (1, 0, 0)
 
         if self.vessel.situation == self.vessel.situation.pre_launch:
@@ -92,9 +93,9 @@ class Launch:
             if self.state == 1: # grav turn
                 if alt < self.grav_turn_end and apoapsis <= self.grav_turn_max_apoapsis:
                     if alt > self.grav_turn_start:
-                        inclinacao = float((self.grav_turn_end - alt) * 90 / self.grav_turn_end)
+                        target_pitch = float((self.grav_turn_end - alt) * 90 / self.grav_turn_end)
 
-                        self.vessel.auto_pilot.target_pitch_and_heading(inclinacao, 90)
+                        self.vessel.auto_pilot.target_pitch_and_heading(target_pitch, self.heading)
                 else:
                     self.state = 2
                     
