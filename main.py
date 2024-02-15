@@ -2,7 +2,7 @@ import krpc
 from time import sleep
 from os import system
 
-from Vector import Vector3
+from PyVecs import Vector3
 
 class Launch:
     def __init__(self):
@@ -35,7 +35,7 @@ class Launch:
         self.grav_turn_inclination = 90
         self.grav_turn_start = 500
         self.grav_turn_end = 60000
-        self.grav_turn_max_apoapsis = 90000
+        self.grav_turn_max_apoapsis = 100000
 
         self.heading = 90
 
